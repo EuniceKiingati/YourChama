@@ -1,12 +1,13 @@
 from .database_connection import Databse
+from werkzeug.security import generate_password_hash
 
 
 class User(Databse):
     def __init__(self, data=None):
         if data:
-            self.username=data.get('username', "").strip()
+            self.username=data.get('username',).strip()
             self.email=data['email'].strip()
-            self.password=data['password'].strip()
+            self.password=generate_password_hash(data['password'].strip())
             self.isadmin=data.get('isadmin', False)
             db_obj=Databse()
             self.conn=db_obj.connection_to_Databse()
@@ -43,6 +44,22 @@ class User(Databse):
             single_user["password"] = user[3]
             single_user['isadmin'] = user[4]
             Userlist.append(single_user)
+    
 
         self.conn.close()
         return Userlist
+
+    def delete_user(self, user_id):
+        db_obj = Databse()
+        self.conn = db_obj.connection_to_Databse()
+        cursor = self.conn.cursor()
+        # delete a user
+        try:
+            cursor.execute(
+                "DELETE FROM users WHERE user_id = %s",
+                (user_id, )
+            )
+        except Exception as exception:
+            print(exception)
+        self.conn.commit()
+        self.conn.close()

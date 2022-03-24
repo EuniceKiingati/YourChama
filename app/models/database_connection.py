@@ -34,7 +34,7 @@ class Databse():
             for table in tables:
                 cursor.execute(table)
         except Exception as e:
-            print(e, "cannot execute")
+            print(e, "cannot execute") 
         self.conn.commit()
         self.conn.close()
 
